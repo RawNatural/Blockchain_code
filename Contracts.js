@@ -1,3 +1,5 @@
+//Don't copy this file. It was only used for testing other contracts, which are not included in this git repository.
+
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
@@ -26,9 +28,6 @@ describe('Deployment', () => {
     flashLoanReceiver = await FlashLoanReceiver.deploy('0x794a61358D6845594F94dc1DB02A252b5b4814aD');
 
 
-    //Deploy aaveFlashLoanReceiver
-    //aaveFlashLoanReceiver = await FlashLoanSimpleReceiverBase.deploy('0x794a61358D6845594F94dc1DB02A252b5b4814aD');
-
   }) // end beforeEach
 
   //it deployed DeployableSmartContract 
@@ -36,12 +35,7 @@ describe('Deployment', () => {
     expect(await deployedSmartContract.deployed)
   })
 
-/*
-  it('deployed aaveFlashLoanReceiver', async () => {
-    expect(await aaveFlashLoanReceiver.deployed)
-  })
 
-  */
 
   it('deployed FlashLoanReceiver', async () => {
     expect(await flashLoanReceiver.deployed);
@@ -61,7 +55,7 @@ describe('Executing Flash Loan', () => {
     console.log(owner)
   })
 })
-/*
+
 describe('Borrowing funds', () => {
 
     it('borrows funds from the pool', async () => {
@@ -74,4 +68,4 @@ describe('Borrowing funds', () => {
     })
 
 
-  })*/
+  })
