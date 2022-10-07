@@ -1,5 +1,7 @@
 //Don't copy this file. It was only used for testing other contracts, which are not included in this git repository.
 
+//The useful part to take from this, is how to deploy contracts while testing with hardhat etc.
+
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
