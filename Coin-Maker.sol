@@ -9,3 +9,10 @@ contract firstToken is ERC20 {
         _mint(msg.sender, initialSupply);
     }
 }
+
+contract CoinMaker is firstToken {
+    constructor(string name, string symbol, uint256 initialSupply){
+        newToken = new ERC20(name, symbol);
+        _mint(msg.sender, initialSupply);
+    }
+}
