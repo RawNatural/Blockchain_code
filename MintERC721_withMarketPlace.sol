@@ -25,6 +25,14 @@ contract MintNFTMarketplace is ERC721Full {
         _;
     }
 
+    function mint(address _to, string memory _tokenURI) public returns (bool) {
+        require(totalSupply() < 100);
+        uint256 _tokenId = totalSupply().add(1);
+        _mint(_to, _tokenId);
+        _setTokenURI(_tokenId, _tokenURI);
+        return true;
+    }
+
     function setNFTPrice(uint256 tokenId, uint256 price) external onlyOwner {
         require(ownerOf(tokenId) == address(this), "Contract must own the NFT");
         nftPrices[tokenId] = price;
@@ -46,12 +54,5 @@ contract MintNFTMarketplace is ERC721Full {
 
         // Emit event for NFT purchase
         emit NFTPurchased(tokenId, msg.sender);
-    }
-
-    function mint(address _to, string memory _tokenURI) public returns (bool) {
-        uint256 _tokenId = totalSupply().add(1);
-        _mint(_to, _tokenId);
-        _setTokenURI(_tokenId, _tokenURI);
-        return true;
     }
 }
