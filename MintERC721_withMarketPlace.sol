@@ -13,7 +13,6 @@ contract MintNFTMarketplace is ERC721Full {
 
     IERC20 public paymentToken;
 
-    event NFTPriceSet(uint256 tokenId, uint256 price);
     event NFTPurchased(uint256 tokenId, address buyer);
 
     constructor(address _paymentToken) ERC721Full("New NFT", "NFT") public {
@@ -32,8 +31,6 @@ contract MintNFTMarketplace is ERC721Full {
 
         // Approve the contract to transfer the NFT
         approve(address(this), tokenId);
-
-        emit NFTPriceSet(tokenId, price);
     }
 
     function purchaseNFT(uint256 tokenId) external {
