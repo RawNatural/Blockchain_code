@@ -9,10 +9,16 @@ import "./Mint_With_Sell.sol";
 contract BuyNFT is CustomCoin{
     using CustomSafeMath for uint256;
 
-    address public conOwner;
+    address private conOwner;
+
+    uint256 public burnPercent;
+
+    Mint_With_Sell mintNFT;
+
 
     constructor() public CustomCoin(1000) {
         conOwner = msg.sender;
+        burnPercent = 30;
     }
 
     modifier onlyOwner() {
@@ -23,7 +29,6 @@ contract BuyNFT is CustomCoin{
 
     //CustomCoin coin; // Replace with the actual address of the ERC20 token contract
 
-    Mint_With_Sell mintNFT;
 
     function buy(uint256 _tokenId) public payable {
         uint256 price = mintNFT.getTokenPrice(_tokenId);
@@ -32,7 +37,7 @@ contract BuyNFT is CustomCoin{
         require(price > 0, "Invalid token price");
 
         // Calculate the amount to be burned (30% of the payment)
-        uint256 burnAmount = price.mul(30).div(100);
+        uint256 burnAmount = price.mul(burnPercent).div(100);
 
         // Calculate the amount to be sent to the seller (70% of the payment)
         uint256 sellerAmount = price.sub(burnAmount);
@@ -59,30 +64,9 @@ contract BuyNFT is CustomCoin{
     }
 
 
-/*
-    function buy(uint256 _tokenId) public payable {
-        uint256 price = mintNFT.getTokenPrice(_tokenId);
-        bool onSale = mintNFT.getIfOnSale(_tokenId);
-        require(onSale, "Token Not For Sale");
-        require(price > 0, "Invalid token price");
-
-        approve(address(this), price);
-        // Step 1: Transfer ERC20 tokens from the buyer to the contract
-        require(allowance(msg.sender, address(this)) >= price, "Insufficient allowance");
-        //require(transferFrom(msg.sender, address(this), price), "Token transfer failed");
-
-        // Step 2: Transfer the ownership of the NFT from the seller to the buyer
-        address seller = mintNFT.ownerOf(_tokenId);
-        require(seller != address(0), "Invalid seller address");
-        require(seller != msg.sender, "You cannot buy your own NFT");
-        mintNFT.safeTransferFrom(seller, msg.sender, _tokenId);
-
-        // Step 3: Transfer the ERC20 tokens from the contract to the seller
-        require(transfer(seller, price), "Token transfer to the seller failed");
-
-        // Clear the sale offer after the successful purchase
-        mintNFT.itemBought(_tokenId);
-    }*/
+    function setBurnPercent(uint256 _burnPerc) public onlyOwner {
+        burnPercent = _burnPerc;
+    }
 
 
     function setMintAddress(address _mintAddy) public onlyOwner {
