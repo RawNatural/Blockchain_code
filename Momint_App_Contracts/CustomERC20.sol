@@ -3,7 +3,11 @@
 // CustomERC20.sol
 pragma solidity ^0.5.0;
 
+import "../CustomSafeMath.sol";
+
 contract CustomERC20 {
+    using CustomSafeMath for uint256;
+
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
     uint256 private _totalSupply;
@@ -77,7 +81,7 @@ string public name;
         require(_allowances[sender][msg.sender] >= amount, "ERC20: allowance exceeded");
 
         _transfer(sender, recipient, amount);
-        _approve(sender, msg.sender, _allowances[sender][msg.sender] - amount);
+        _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
         return true;
     }
 
@@ -105,6 +109,14 @@ string public name;
 
     function setAppAddress(address _appAddy) public onlyOwner {
         _appAddress = _appAddy;
+    }
+
+    function _burn(address account, uint256 amount) internal {
+        require(account != address(0), "ERC20: burn from the zero address");
+
+        _balances[account] = _balances[account].sub(amount);
+        _totalSupply = _totalSupply.sub(amount);
+        emit Transfer(account, address(0), amount);
     }
 
     // Events
