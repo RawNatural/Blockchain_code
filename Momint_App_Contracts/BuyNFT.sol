@@ -5,20 +5,20 @@ pragma solidity ^0.5.0;
 import "./CustomCoin.sol";
 import "./Mint_With_Sell.sol";
 
-contract BuyNFT {
-    address public owner;
+contract BuyNFT is CustomCoin{
+    address public conOwner;
 
-    constructor() public {
-        owner = msg.sender;
+    constructor() public CustomCoin(1000) {
+        conOwner = msg.sender;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can call this function");
+        require(msg.sender == conOwner, "Only the owner can call this function");
         _;
     }
 
 
-    CustomCoin coin; // Replace with the actual address of the ERC20 token contract
+    //CustomCoin coin; // Replace with the actual address of the ERC20 token contract
 
     Mint_With_Sell mintNFT;
 
@@ -29,10 +29,10 @@ contract BuyNFT {
         require(onSale, "Token Not For Sale");
         require(price > 0, "Invalid token price");
 
-        coin.approve(address(this), price);
+        approve(address(this), price);
         // Step 1: Transfer ERC20 tokens from the buyer to the contract
-        require(coin.allowance(msg.sender, address(this)) >= price, "Insufficient allowance");
-        require(coin.transferFrom(msg.sender, address(this), price), "Token transfer failed");
+        require(allowance(msg.sender, address(this)) >= price, "Insufficient allowance");
+        //require(transferFrom(msg.sender, address(this), price), "Token transfer failed");
 
         // Step 2: Transfer the ownership of the NFT from the seller to the buyer
         address seller = mintNFT.ownerOf(_tokenId);
@@ -41,21 +41,19 @@ contract BuyNFT {
         mintNFT.safeTransferFrom(seller, msg.sender, _tokenId);
 
         // Step 3: Transfer the ERC20 tokens from the contract to the seller
-        require(coin.transfer(seller, price), "Token transfer to the seller failed");
+        require(transfer(seller, price), "Token transfer to the seller failed");
 
         // Clear the sale offer after the successful purchase
-        //Will have to do this as an event inside other contract.
-        //isForSale[_tokenId] = false;
-        //tokenPrice[_tokenId] = 0;
+        mintNFT.itemBought(_tokenId);
     }
 
 
     function setMintAddress(address _mintAddy) public onlyOwner {
         mintNFT = Mint_With_Sell(_mintAddy);
     }
-
+/*
     function setCoinAddress(address _coinAddy)  public onlyOwner {
         coin = CustomCoin(_coinAddy);
-    }
+    }*/
 
 }
