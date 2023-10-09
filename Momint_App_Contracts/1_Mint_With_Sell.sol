@@ -3,7 +3,7 @@
 pragma solidity ^0.5.0;
 
 
-import "../1_MomentNFT.sol";
+import "./0_MomentNFT.sol";
 
 contract Mint_With_Sell is MomentNFT {
 
